@@ -37,8 +37,9 @@
 	},
 	"scripts": {
 		"start": "node ./bin/www",
-		"dev:backend": "nodemon --watch api ./bin/www",
-		"start:front": "react-scripts start",
+		"dev:back": "nodemon --watch api ./bin/www",
+		"dev:front": "react-scripts start",
+		"dev": "yarn dev:backend && yarn dev:front",
 		"build": "react-scripts build",
 		"test:front": "react-scripts test",
 		"lint:front": "eslint .",
