@@ -39,7 +39,7 @@
 		"start": "node ./bin/www",
 		"dev:backend": "nodemon --watch api ./bin/www",
 		"start:front": "react-scripts start",
-		"build:front": "react-scripts build",
+		"build": "react-scripts build",
 		"test:front": "react-scripts test",
 		"lint:front": "eslint .",
 		"eject": "react-scripts eject"
