@@ -5,8 +5,38 @@ const utils = require('./utils');
 const { Headers } = require('node-fetch');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-	res.send('respond with a resource');
+router.get('/', async function(request, response) {
+	let GW2Username;
+	let GW2UsernameUrl;
+	let token;
+
+	// Valida el body de la petición
+	try {
+		GW2Username = request.query.username;
+		GW2UsernameUrl = utils.accountParser(GW2Username);
+	} catch (error) {
+		response.status(400).send({
+			status: 'KO',
+			msg: 'username not provided correctly',
+			example: 'http://localhost:3000/api/user?username=fulano.1084'
+		});
+	}
+
+	// Recupera de firebase el token del usuario
+	const url = 'https://guildwars2-armory.firebaseio.com/users/' + GW2UsernameUrl + '.json';
+	const userData = await fetch(url).then((res) => res.json());
+
+	// Comprueba que el usuario ya está registrado
+	try {
+		token = userData.token;
+	} catch (error) {
+		response.status(404).send({
+			status: 'NOT FOUND',
+			msg: `token for requested user ${GW2Username} not found`
+		});
+	}
+
+	response.send({ token, username: GW2Username });
 });
 
 router.post('/', async function(request, response) {
@@ -46,7 +76,7 @@ router.post('/', async function(request, response) {
 	const saveToDB = await fetch('https://guildwars2-armory.firebaseio.com/users/' + gw2Username + '.json', {
 		method: 'PUT',
 		body: JSON.stringify({
-			...gw2AccountData,
+			date: 'TODO DATE',
 			token: token
 		})
 	}).then((res) => res.json());
